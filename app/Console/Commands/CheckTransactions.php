@@ -52,7 +52,6 @@ class CheckTransactions extends Command
         $count = 0;
         foreach ($transactions as $transaction) {
             $book = Book::with('subjects')->where('id', $transaction->book_id)->first();
-
             $subs = [];
             foreach ($book->subjects as $subject) {
                 $subs[] = $subject->name;
@@ -68,7 +67,7 @@ class CheckTransactions extends Command
                 }
             }
 
-            if ($transaction->type == 'reserved') {
+            if ($transaction->type == 'reserved' || $transaction->type == 'non-reserved') {
 
                 if (Carbon::now() > $transaction->return_at) {
                     $fees = Fee::where('transaction_id', $transaction->id)->first();
