@@ -65,10 +65,10 @@
                                     <td>{{$user->name}}</td>
                                     <td>{{$user->email}}</td>
                                     <td>
-                                        {!! BootForm::open()->delete()->action(url('admin/users/' . $user->id)) !!}
+{{--                                        {!! BootForm::open()->delete()->action(url('admin/users/' . $user->id)) !!}--}}
                                         <a href="{{url('admin/users/' . $user->id) . '/edit'}}" role="button" class="btn btn-success btn-xs">Edit</a>
-                                        {!! BootForm::submit('Delete')->class('btn btn-danger btn-xs') !!}
-                                        {!! BootForm::close() !!}
+                                        {{--{!! BootForm::submit('Delete')->class('btn btn-danger btn-xs') !!}--}}
+                                        {{--{!! BootForm::close() !!}--}}
                                     </td>
                                 </tr>
                             @empty
