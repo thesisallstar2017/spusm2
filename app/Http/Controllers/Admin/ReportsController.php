@@ -99,7 +99,7 @@ class ReportsController extends Controller
 
         $users = User::lists('name', 'id')->toArray();
 
-        return view('admin.reports.transaction-report', compact('data', 'filters', 'users'));
+        return view('admin.reports.transaction_report', compact('data', 'filters', 'users'));
     }
 
     public function filterTransactionReport(Request $request)
