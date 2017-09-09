@@ -148,9 +148,9 @@
                                     <td>{{$book->publisher}}</td>
                                     <td>{{$book->published_year}}</td>
                                     <td>
+                                        @if ($book->archive != 'Yes')
                                         <a href="{{url('admin/books/' . $book->id) . '/edit'}}" role="button" class="btn btn-success btn-xs btn-block">Edit</a>
 
-                                        @if ($book->archive != 'Yes')
                                             <a data-toggle="modal"
                                                data-target="#view-criteria-of-weeding" data-book-id="{{ $book->id }} "
                                                {{--href="/admin/lost-book/{{$transaction->id}}"--}}
