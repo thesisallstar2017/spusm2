@@ -205,7 +205,8 @@
         });
 
         $("#archive").click(function() {
-            var url = '/admin/books/' + "{{$book->id}}" + '/archive';
+
+            var url = '/admin/books/' + "{{ isset($book->id) ? $book->id : ''}}" + '/archive';
 
             console.log(url);
             swal({
