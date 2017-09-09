@@ -49,7 +49,7 @@
                 <br>
             </div>
             <div class="col-md-6">
-                <a href="/"  class="btn btn-default btn-lg btn-block  btn-xlarge"><img src="/images/borrower.png" height="65" width="65"><br>
+                <a href="/admin/reports/borrower-report"  class="btn btn-default btn-lg btn-block  btn-xlarge"><img src="/images/borrower.png" height="65" width="65"><br>
                     <span style="font-size: 10px;font-weight: bold;white-space: normal;" class="text text-success">Borrower Reports</span>
                 </a>
                 <br>
