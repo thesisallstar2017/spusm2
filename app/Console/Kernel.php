@@ -26,7 +26,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('spusm:check-transactions')
-                 ->dailyAt('09:00')
+//                 ->dailyAt('09:00')
+                 ->hourly()
                  ->withoutOverlapping();
     }
 }
