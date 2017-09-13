@@ -281,12 +281,12 @@ class TransactionsController extends Controller
         $non_reserve_count = 0;
         foreach($check_transaction_record as $value ) {
 
-            if (!Auth::user()->hasRole('admin') && $value->book_id == $book->id) {
-                alert()->warning("Please choose another book with a different title.",  'You already have an active reservation for this book')->persistent('Okay');
-                return back();
-            }
-
             if (!($value->status == 'rejected' || $value->status == 'canceled')) {
+                if (!Auth::user()->hasRole('admin') && $value->book_id == $book->id) {
+                    alert()->warning("Please choose another book with a different title.",  'You already have an active reservation for this book')->persistent('Okay');
+                    return back();
+                }
+
                 if ($value->type == 'non-reserved') {
                     $is_non_reserved = true;
                     $non_reserve_count++;
