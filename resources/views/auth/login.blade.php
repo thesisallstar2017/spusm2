@@ -64,7 +64,7 @@
             @endif
             <div class="form-group{{ $errors->has('username') && $errors->first('username') != 'These credentials do not match our records.' ? ' has-error' : '' }}">
 
-                <input id="username"  class="form-control" name="username" placeholder="Email" value="{{ old('username') }}">
+                <input id="username"  class="form-control" name="username" placeholder="Username" value="{{ old('username') }}">
 
                 @if ($errors->has('username') && $errors->first('username') != 'These credentials do not match our records.')
                     <span class="help-block">
