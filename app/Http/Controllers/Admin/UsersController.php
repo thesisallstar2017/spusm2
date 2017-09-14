@@ -88,7 +88,8 @@ class UsersController extends Controller
             'name'  => $request->input('name'),
             'user_id' => $request->input('user_id'),
             'email' => $request->input('email'),
-            'password'  => bcrypt($request->input('password'))
+            'password'  => bcrypt($request->input('password')),
+            'username'  => $request->input('user_id')
         ]);
         $user->save();
 
@@ -154,6 +155,7 @@ class UsersController extends Controller
         if ($request->input('password') != '') {
             $user->password = bcrypt($request->input('password'));
         }
+        $user->username = $request->input('user_id');
         $user->save();
 
         $user->roles()->sync($request->input('roles'));

@@ -57,13 +57,18 @@
             <h2 class="form-login-heading"><img src="images/logo.png" style="width:200px"></h2>
 
             <div class="login-wrap">
-            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+            @if ($errors->has('username') && $errors->first('username') == 'These credentials do not match our records.')
+                <div class="alert alert-danger" role="alert">
+                    <h6>Invalid Username/Password</h6>
+                </div>
+            @endif
+            <div class="form-group{{ $errors->has('username') && $errors->first('username') != 'These credentials do not match our records.' ? ' has-error' : '' }}">
 
-                <input id="email"  class="form-control" name="email" placeholder="Email" value="{{ old('email') }}">
+                <input id="username"  class="form-control" name="username" placeholder="Email" value="{{ old('username') }}">
 
-                @if ($errors->has('email'))
+                @if ($errors->has('username') && $errors->first('username') != 'These credentials do not match our records.')
                     <span class="help-block">
-                        <strong>{{ $errors->first('email') }}</strong>
+                        <strong>{{ $errors->first('username') }}</strong>
                     </span>
                 @endif
             </div>
