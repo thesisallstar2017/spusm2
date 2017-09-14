@@ -332,7 +332,7 @@
                                         @endif
 
                                          @if (Auth::user()->hasRole('admin'))
-                                            @if (!is_null($transaction->borrowed_at) && $transaction->status != 'returned')
+                                            @if ($transaction->borrowed_at != 'None' && $transaction->status != 'returned')
                                                 @if ($transaction->status != 'lost_and_replaced')
 
                                                     @if ($transaction->is_overdue == false)

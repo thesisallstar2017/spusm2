@@ -39,4 +39,29 @@ class Transaction extends Model
         return $this->hasMany(Fee::class);
     }
 
+    public function getReturnAtAttribute($value)
+    {
+        return is_null($value) ? 'None' : $value;
+    }
+
+    public function getBorrowedAtAttribute($value)
+    {
+        return is_null($value) ? 'None' : $value;
+    }
+
+    public function getExpiredAtAttribute($value)
+    {
+        return is_null($value) ? 'None' : $value;
+    }
+
+    public function getReturnedAtAttribute($value)
+    {
+        return is_null($value) ? 'None' : $value;
+    }
+
+    public function getReservedAtAttribute($value)
+    {
+        return is_null($value) ? 'None' : $value;
+    }
+
 }
