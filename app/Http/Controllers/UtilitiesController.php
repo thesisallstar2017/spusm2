@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\DB;
 
 class UtilitiesController extends Controller
 {
@@ -93,6 +94,36 @@ class UtilitiesController extends Controller
             'more' => ($books->lastPage() > $books->currentPage()),
             'page' => $books->currentPage(),
           ],
+        ];
+    }
+
+    public function transactionBooks(Request $request)
+    {
+        $q = $request->input('q');
+
+        $transactions = Transaction::select(DB::raw('books.*'))
+            ->join('books', 'transaction.book_id', '=', 'books.id')
+            ->where('books.title', 'like','%' . $q . '%')
+            ->groupBy(DB::raw('books.title'))
+            ->paginate(10);
+
+        // Format for select2
+        $results = [];
+        foreach ($transactions as $transaction) {
+            $transaction->text = $transaction->title;
+            $results[]  = [
+                'id'    => $transaction->id,
+                'text'  => $transaction->title
+            ];
+        }
+
+        return [
+            'results' => $results,
+            'total' => $transactions->total(),
+            'pagination' => [
+                'more' => ($transactions->lastPage() > $transactions->currentPage()),
+                'page' => $transactions->currentPage(),
+            ],
         ];
     }
 

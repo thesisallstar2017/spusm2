@@ -251,6 +251,7 @@
                                 <th>Reserved At</th>
                                 <th>Borrowed At</th>
                                 <th>Returned At</th>
+                                <th>Borrower</th>
                                 {{--<th>Is Lost</th>--}}
                                 {{--<th>Is Expired Reservation</th>--}}
                                 {{--<th>Is Overdue</th>--}}
@@ -293,6 +294,7 @@
                                     <td>{{@$transaction->reserved_at}}</td>
                                     <td>{{@$transaction->borrowed_at}}</td>
                                     <td>{{@$transaction->returned_at}}</td>
+                                    <td>{{@$transaction->user->name }}</td>
 
                                     {{--<td>--}}
                                         {{--{!! $transaction->is_lost ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>'!!}--}}
@@ -393,7 +395,7 @@
                 allowClear: true,
                 minimumInputLength: 3,
                 ajax: {
-                    url: '/books/search',
+                    url: '/transaction_books/search',
                     data: function (params) {
                         return {
                             q: params.term,

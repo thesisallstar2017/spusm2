@@ -46,6 +46,7 @@ Route::get('books/search', 'UtilitiesController@searchBook');
 Route::get('users/search', 'UtilitiesController@searchUser');
 Route::get('publisher/search', 'UtilitiesController@searchPublisher');
 Route::get('call_number/search', 'UtilitiesController@searchCallNumber');
+Route::get('transaction_books/search', 'UtilitiesController@transactionBooks');
 
 //Change Password
 Route::get('change-password', 'Auth\ChangePasswordController@form');
