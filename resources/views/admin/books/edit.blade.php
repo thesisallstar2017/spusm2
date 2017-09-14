@@ -52,8 +52,12 @@
                     {!! BootForm::select('Subject', 'subjects')->options($subjects)->id('subjects')->required()->data('tags', true)->multiple()->style('width:100%') !!}
                     {!! BootForm::select('Material Type', 'material_id', ['' => ''] + $materials->getMaterials())->placeholder('Material Type')->required()->style('width:100%') !!}
                     {!! BootForm::text('Publisher', 'publisher')->required() !!}
-                    {!! BootForm::select('Year Published', 'published_year', ['' => ''] + $year)->required()->style
-                    ('width:100%') !!}
+                    <div class="form-group">
+                        <label class="control-label" for="published_year">Year Published</label>
+                        <input type="number" name="published_year" id="published_year" class="form-control">
+                    </div>
+                    {{--{!! BootForm::select('Year Published', 'published_year', ['' => ''] + $year)->required()->style--}}
+                    {{--('width:100%') !!}--}}
                     {!! BootForm::text('Publish Place', 'publish_place')->required() !!}
                     <div class="form-group">
                         <label class="control-label" for="quantity">Copies Available</label>
@@ -139,10 +143,10 @@
                 }
             });
 
-            $("#published_year").select2({
-                placeholder: "-- Select Year Published --",
-                allowClear: true
-            });
+//            $("#published_year").select2({
+//                placeholder: "-- Select Year Published --",
+//                allowClear: true
+//            });
 
             $("#etal").select2({
                 placeholder: "-- Select if true or false --",

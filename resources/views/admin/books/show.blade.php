@@ -49,7 +49,7 @@
 
                                 {!! BootForm::open()->id('reserveBookAdmin') !!}
                                 {!! BootForm::select('Users', 'user_id', ['' => '-- Select One --'] + $users)->style('width:100%') !!}
-                                {!! BootForm::button('Reserve', 'reserve-admin')->class('btn btn-success form-control reserve-admin') !!}
+                                {!! BootForm::button('Borrow', 'reserve-admin')->class('btn btn-success form-control reserve-admin') !!}
                                 {!! BootForm::close() !!}
 
                             </div>
@@ -107,7 +107,7 @@
                     <a data-toggle="modal"
                        data-target="#reserve_book_admin"
                        {{--href="/admin/lost-book/{{$transaction->id}}"--}}
-                       class="btn btn-success form-control">Reserve</a>
+                       class="btn btn-success form-control">Borrow</a>
                     {{--{!! BootForm::button('Reserve', 'reserve-admin')->class('btn btn-success form-control reserve-admin') !!}--}}
                     {!! BootForm::close() !!}
                 @endif

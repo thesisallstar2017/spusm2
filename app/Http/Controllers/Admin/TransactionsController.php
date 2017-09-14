@@ -281,7 +281,7 @@ class TransactionsController extends Controller
         $non_reserve_count = 0;
         foreach($check_transaction_record as $value ) {
 
-            if (!($value->status == 'rejected' || $value->status == 'canceled')) {
+            if (!($value->status == 'rejected' || $value->status == 'canceled' || $value->status == 'lost_and_replaced')) {
                 if (!Auth::user()->hasRole('admin') && $value->book_id == $book->id) {
                     alert()->warning("Please choose another book with a different title.",  'You already have an active reservation for this book')->persistent('Okay');
                     return back();
@@ -290,6 +290,7 @@ class TransactionsController extends Controller
                 if ($value->type == 'non-reserved') {
                     $is_non_reserved = true;
                     $non_reserve_count++;
+                    $count--;
                 }
 
                 $count++;
@@ -336,6 +337,37 @@ class TransactionsController extends Controller
 
         return redirect('admin/transaction');
 
+    }
+
+    private function _appr($id)
+    {
+        $transaction = Transaction::find($id);
+
+        $book = Book::where('id', $transaction->book_id)->first();
+
+        $subs = [];
+        foreach ($book->subjects as $subject) {
+            $subs[] = $subject->name;
+        }
+
+        $return_at = '';
+
+        foreach($subs as $key => $value) {
+            if (strpos($value, 'Fiction') !== false) {
+                $return_at = Carbon::parse($transaction->reserved_at)->addWeek();
+            } elseif($transaction->type == 'non-reserved' && strpos($value, 'Fiction') === false) {
+                $return_at = Carbon::now()->addDays(2);
+            } else {
+                $return_at = Carbon::now()->tomorrow()->hour(9);
+            }
+        }
+
+        $transaction->status = 'borrowed';
+        $transaction->borrowed_at = Carbon::now();
+        $transaction->return_at = $return_at;
+        $transaction->save();
+
+        return $transaction;
     }
 
     public function approveBookReservation($id)
@@ -408,7 +440,6 @@ class TransactionsController extends Controller
 
     public function returnBook(Request $request, $id)
     {
-//        dd($request->all());
         $initial_amount = $request->get('initial-amount');
         $added_penalty = $request->get('added_penalty');
         $total_amount = $request->get('total-amount');
@@ -420,7 +451,7 @@ class TransactionsController extends Controller
         $fees = Fee::where('transaction_id', $id)->first();
         $book = Book::find($transaction->book_id);
 
-        if ($is_damaged == true) {
+        if ($is_damaged == 'With Damage') {
             $transaction->is_damaged = true;
         }
 
@@ -603,7 +634,7 @@ class TransactionsController extends Controller
         $is_non_reserved = false;
         $non_reserve_count = 0;
         foreach($check_transaction_record as $value ) {
-            if (!$user->hasRole('admin') && $value->book_id == $book->id) {
+            if (!auth()->user()->hasRole('admin') && $value->book_id == $book->id) {
                 $message = 'Please choose another book with a different title.';
                 $success = false;
 
@@ -611,8 +642,6 @@ class TransactionsController extends Controller
                     'success' => $success,
                     'message' => $message
                 ]);
-//                alert()->warning("Please choose another book with a different title.",  'You already have an active reservation for this book')->persistent('Okay');
-//                return back();
             }
 
             if (!($value->status == 'rejected' || $value->status == 'canceled')) {
@@ -668,10 +697,11 @@ class TransactionsController extends Controller
             ]);
 
             $borrow_book->save();
+            $this->_appr($borrow_book->id);
 
             $book->available_quantity = $borrowed_quantity;
             $book->save();
-            $message = strtoupper($book->title) . " is now reserved.";
+            $message = strtoupper($book->title) . " is now borrowed.";
             $success = true;
 //            alert()->success(strtoupper($book->title) . " is now reserved.")->persistent('Okay');
         } else {

@@ -28,7 +28,8 @@ class Book extends Model
       'illustrator',
       'compiler',
       'note',
-      'available_quantity'
+      'available_quantity',
+      'reason_for_weeding'
     ];
 
     public function authors()

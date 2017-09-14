@@ -38,6 +38,9 @@ class BooksSeeder extends Seeder
             $subject_ids = [];
 
             foreach ($author_arr as $author) {
+                if (empty($author) || is_null($author)) {
+                    continue;
+                }
                 $check_author = Author::where('name', $author)->first();
 
                 if (! $check_author) {
@@ -55,6 +58,10 @@ class BooksSeeder extends Seeder
             }
 
             foreach ($subject_arr as $subject) {
+                if (empty($subject) || is_null($subject)) {
+                    continue;
+                }
+
                 $check_subject = Subject::where('name', $subject)->first();
 
                 if (! $check_subject) {
@@ -90,6 +97,10 @@ class BooksSeeder extends Seeder
                 $save_barcode = $barcode;
             }
 
+
+            if (empty($value['Title']) || is_null($value['Title'])) {
+                continue;
+            }
 
             $book = Book::create([
               'title'               => $value['Title'],

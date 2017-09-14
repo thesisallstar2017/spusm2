@@ -214,11 +214,12 @@ class UtilitiesController extends Controller
         $total_amount = $request->get('total-amount');
         $given_amount = $request->get('given-amount');
         $change = $request->get('change');
-        $is_damaged = $request->get('is_damaged');
 
         $query = Transaction::where('id', $transaction_id)->with('book', 'user', 'fees');
 
         $transaction = $query->first();
+
+        $is_damaged = $transaction->is_damaged ? 'With Damage' : 'Without Damage';
 
         return view('printouts.receipt', compact('transaction', 'added_penalty', 'total_amount', 'given_amount', 'change','is_damaged'));
     }

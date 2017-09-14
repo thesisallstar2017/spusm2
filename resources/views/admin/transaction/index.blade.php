@@ -565,6 +565,8 @@
 //                            console.log(data.message);
                         });
                     } else {
+                        console.log(form_data);
+                        console.log(url);
                         $.post(url, form_data, function (data) {
                             console.log(form_data);
                             console.log(
@@ -649,6 +651,13 @@
                 is_lost = '<span class="label label-success">Yes</span>';
             } else {
                 is_lost = '<span class="label label-default">No</span>';
+            }
+
+            var is_damaged = '';
+            if (books.is_damaged == true) {
+                is_damaged = '<span class="label label-success">Yes</span>';
+            } else {
+                is_damaged = '<span class="label label-default">No</span>';
             }
 
             var is_expired = '';
@@ -782,6 +791,10 @@
                                         '<td>' + is_overdue + '</td>' +
                                     '</tr>' +
                                     '<tr>' +
+                                        '<td style="color: #5cb85c; font-weight: bold">Is Damaged</td>' +
+                                        '<td>' + is_damaged + '</td>' +
+                                    '</tr>' +
+                                    '<tr>' +
                                         '<td style="color: #5cb85c; font-weight: bold">Amount</td>' +
                                         '<td>' + fees + '</td>' +
                                     '</tr>' +
@@ -892,7 +905,6 @@
         $("#process-lost-book").on('click', function(e) {
             var url = '/admin/lost-book/' + $('input[name="lost-trans-id"]').val();
 
-            console.log(url);
             swal({
                 title: "Are you sure that this book was lost?",
                 text: "If Yes, please make sure that the borrower paid the ₱100 processing fee and that it was replaced",

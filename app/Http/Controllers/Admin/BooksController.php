@@ -84,6 +84,7 @@ class BooksController extends Controller
             $books = $this->model_filter->filter($query)->orderBy('id', 'ASC')->paginate(10);
         }
 
+
         return view('admin.books.index', compact('books', 'filters'));
     }
 
@@ -245,7 +246,12 @@ class BooksController extends Controller
     public function update(Request $request, $id)
     {
 
-//        dd($request->all());
+        $request_vals = $request->except('_token', 'author', 'subject');
+
+        foreach ($request_vals as $request_val) {
+            $request_vals['available_quantity'] = $request->get('quantity');
+        }
+
         $author_arr = $request->get('authors');
         $subject_arr = $request->get('subjects');
 
@@ -282,7 +288,7 @@ class BooksController extends Controller
 
 //        dd($author_ids, $subject_ids);
         $book   = Book::with('authors', 'subjects')->find($id);
-        $book->update($request->all());
+        $book->update($request_vals);
 
         $book->save();
 
@@ -330,6 +336,7 @@ class BooksController extends Controller
 //        dd($request->all());
         $book = Book::find($request->get('book-id'));
 
+        $book->reason_for_weeding = $request->get('reason_for_weeding');
         $book->archive = 'Yes';
         $book->save();
 

@@ -73,6 +73,7 @@
                                     </ol>
                                     {!! BootForm::open()->id('archive-form') !!}
                                     {!! BootForm::hidden('book-id') !!}
+                                    {!! BootForm::textarea('Reason For Weeding', 'reason_for_weeding')->rows(4) !!}
                                     {!! BootForm::close() !!}
                                     <button class="btn btn-danger btn-block" id="archive">Archive this book</button>
                                 </div>
