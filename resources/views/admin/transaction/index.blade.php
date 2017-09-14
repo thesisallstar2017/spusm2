@@ -251,11 +251,11 @@
                                 <th>Reserved At</th>
                                 <th>Borrowed At</th>
                                 <th>Returned At</th>
-                                <th>Is Lost</th>
-                                <th>Is Expired Reservation</th>
-                                <th>Is Overdue</th>
-                                <th>Is Damaged</th>
-                                <th>Is Rejected</th>
+                                {{--<th>Is Lost</th>--}}
+                                {{--<th>Is Expired Reservation</th>--}}
+                                {{--<th>Is Overdue</th>--}}
+                                {{--<th>Is Damaged</th>--}}
+                                {{--<th>Is Rejected</th>--}}
                                 <th></th>
 
                             </tr>
@@ -294,21 +294,21 @@
                                     <td>{{@$transaction->borrowed_at}}</td>
                                     <td>{{@$transaction->returned_at}}</td>
 
-                                    <td>
-                                        {!! $transaction->is_lost ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>'!!}
-                                    </td>
-                                    <td>
-                                        {!! $transaction->is_expired ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}
-                                    </td>
-                                    <td>
-                                        {!! $transaction->is_overdue ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}
-                                    </td>
-                                    <td>
-                                        {!! $transaction->is_damaged ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}
-                                    </td>
-                                    <td>
-                                        {!! $transaction->is_rejected ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}
-                                    </td>
+                                    {{--<td>--}}
+                                        {{--{!! $transaction->is_lost ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>'!!}--}}
+                                    {{--</td>--}}
+                                    {{--<td>--}}
+                                        {{--{!! $transaction->is_expired ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}--}}
+                                    {{--</td>--}}
+                                    {{--<td>--}}
+                                        {{--{!! $transaction->is_overdue ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}--}}
+                                    {{--</td>--}}
+                                    {{--<td>--}}
+                                        {{--{!! $transaction->is_damaged ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}--}}
+                                    {{--</td>--}}
+                                    {{--<td>--}}
+                                        {{--{!! $transaction->is_rejected ? '<span class="label label-success">Yes</span>' : '<span class="label label-default">No</span>' !!}--}}
+                                    {{--</td>--}}
                                     <td>
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         @if($transaction->status == 'reserved')
