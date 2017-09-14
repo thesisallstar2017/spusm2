@@ -111,7 +111,7 @@ class TransactionsController extends Controller
             if (!Auth::user()->hasRole('admin')) {
                 $data = $this->model_filter->filter($query)->orderBy('return_at', 'DESC');
             } else {
-                $data = $this->model_filter->filter($query)->orderBy('id', 'ASC');
+                $data = $this->model_filter->filter($query)->orderBy('id', 'DESC');
             }
         }
 
