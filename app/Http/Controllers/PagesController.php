@@ -33,6 +33,7 @@ class PagesController extends Controller
     public function search(Request $request)
     {
         if (!is_null($request->get('filter_by')) && !is_null($request->get('search-keyword')) && is_null($request->get('search'))) {
+            $type = 'default-search';
             $search = $request->get('search-keyword');
 
             $books = DB::select("
@@ -71,6 +72,8 @@ class PagesController extends Controller
             );
 
         } else if (!is_null($request->get('filter_by')) && !is_null($request->get('search'))) {
+            $type = 'default-search';
+
             $query = Book::with('authors', 'subjects');
 
             $filter_by = $request->get('filter_by');
@@ -122,9 +125,47 @@ class PagesController extends Controller
                 count($result), $perPage, $page,
                 ['path' => $request->url(), 'query' => $request->query()]
             );
+        } else {
+            $type = 'multiple-search';
+
+            $select = "
+                SELECT
+                    books.archive,
+                    books.id,
+                    books.card_number,
+                    books.call_number,
+                    books.published_year,
+                    books.title,
+                    books.barcode,
+                    substring_index(group_concat(books.publisher SEPARATOR ','), ',', 1) as publisher,
+                    group_concat(authors.name) as author_name,
+                    substring_index(group_concat(subjects.name SEPARATOR ','), ',', 1) as subject_name
+                   from books
+                   LEFT JOIN author_book on author_book.book_id = books.id
+                   LEFT JOIN authors on author_book.author_id = authors.id
+                   LEFT JOIN book_subject on book_subject.book_id = books.id
+                   LEFT JOIN subjects on book_subject.subject_id = subjects.id
+        WHERE (books.title LIKE '%{$request->get('book_title')}%'
+    AND publisher LIKE '%{$request->get('publisher_name')}%'
+    AND subjects.name LIKE '%{$request->get('subject_name')}%'
+    AND authors.name LIKE '%{$request->get('authors_name')}%'
+    AND books.call_number LIKE '%{$request->get('call_number')}%')
+                   GROUP BY books.id
+        ";
+
+            $books = DB::select($select);
+            $result = json_decode(json_encode($books), true);
+//            dd($result, $request->all());
+            $page = $request->get('page');
+            $perPage = 20;
+            $offset = ($page * $perPage) - $perPage;
+
+            $data = new LengthAwarePaginator(array_slice($result, $offset, $perPage, true),
+                count($result), $perPage, $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
         }
 
-        return view('pages.index', compact('request', 'data'));
+        return view('pages.index', compact('request', 'data', 'type'));
     }
-
 }

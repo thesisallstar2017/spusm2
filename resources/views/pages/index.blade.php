@@ -11,9 +11,30 @@
     </div>
 </div>
 <div class="container self-class">
+    <div class="row" style="padding-bottom: 3px">
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-success btn-xs pull-right show-advanced-search">Multiple Search</button>
+            <button type="button" class="btn btn-success btn-xs pull-right show-default-search" style="display: none">Single Search</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12">
-            <div class="panel" style="border-width: 2px;border-color:#5cb85c">
+            {{--Advanced Search--}}
+            <div class="panel advanced-search" style="border-width: 2px;border-color:#5cb85c; display: none;">
+                <div class="panel-body">
+                    {!! BootForm::openHorizontal(['sm' => [2,10]])->addClass('search-panel')->action('/')->post() !!}
+                    {!! BootForm::text('Book', 'book_title') !!}
+                    {!! BootForm::text('Author', 'authors_name') !!}
+                    {!! BootForm::text('Subject', 'subject_name') !!}
+                    {!! BootForm::text('Publisher', 'publisher_name') !!}
+                    {!! BootForm::text('Call Number', 'call_number') !!}
+                    {!! BootForm::submit('Search') !!}
+                    {!! BootForm::close() !!}
+
+                </div>
+            </div>
+            {{--Default Search--}}
+            <div class="panel default-search" style="border-width: 2px;border-color:#5cb85c">
                 <div class="panel-body">
                     {!! BootForm::openHorizontal(['sm' => [1,11]])->addClass('search-panel') !!}
                     {!! BootForm::bind($request) !!}
@@ -110,6 +131,35 @@
 @section('page_js')
     <script type="text/javascript">
         $(function() {
+
+            var type = '{{ isset($type) && $type == 'default-search' ? true : false}}';
+
+            if(!type) {
+                $('.default-search').hide();
+                $('.show-advanced-search').hide();
+                $('.advanced-search').show();
+                $('.show-default-search').show();
+            } else {
+                $('.advanced-search').hide();
+                $('.show-default-search').hide();
+                $('.default-search').show();
+                $('.show-advanced-search').show();
+            }
+
+            $('.show-advanced-search').on('click', function () {
+                $('.default-search').hide();
+                $(this).hide();
+                $('.advanced-search').show();
+                $('.show-default-search').show();
+            });
+
+            $('.show-default-search').on('click', function () {
+                $('.advanced-search').hide();
+                $(this).hide();
+                $('.default-search').show();
+                $('.show-advanced-search').show();
+            });
+
             $('#div-search-keyword').hide();
             $('#search-keyword').prop('disabled', true);
 
