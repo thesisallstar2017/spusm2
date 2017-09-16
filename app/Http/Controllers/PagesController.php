@@ -6,6 +6,7 @@ use App\Models\Author;
 use App\Models\Book;
 use App\Models\Subject;
 use App\Models\Transaction;
+use Bzarzuela\ModelFilter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -17,24 +18,43 @@ use Illuminate\Support\Facades\DB;
 class PagesController extends Controller
 {
 
+    private $model_filter;
+
+    private $filter_rules = [
+
+    ];
+
     /**
      * PagesController constructor.
      */
     public function __construct()
     {
 //        $this->middleware('auth');
+        $this->model_filter = new ModelFilter('opac');
+
+        $this->model_filter->setRules($this->filter_rules);
     }
 
     public function index(Request $request)
     {
-        return view('pages.index', compact('request'));
-    }
+        $filters = $this->model_filter->getFormData();
+        $filter_by = isset($filters['filter_by']) ? $filters['filter_by'] : '';
+        $search_keyword = isset($filters['search-keyword']) ? $filters['search-keyword'] : '';
+        $search = isset($filters['search']) ? $filters['search'] : '';
 
-    public function search(Request $request)
-    {
-        if (!is_null($request->get('filter_by')) && !is_null($request->get('search-keyword')) && is_null($request->get('search'))) {
+        $req_book_title = isset($filters['book_title']) ? $filters['book_title'] : '';
+        $req_authors_name = isset($filters['authors_name']) ? $filters['authors_name'] : '';
+        $req_subject_name = isset($filters['subject_name']) ? $filters['subject_name'] : '';
+        $req_publisher_name = isset($filters['publisher_name']) ? $filters['publisher_name'] : '';
+        $req_call_number = isset($filters['call_number']) ? $filters['call_number'] : '';
+
+//        dd(!empty($filter_by), $search_keyword, $search, $req_book_title,
+//            $req_authors_name, $req_subject_name, $req_publisher_name, $req_call_number);
+//        dd($filters);
+
+        if (!empty($filter_by) && !empty($search_keyword) && empty($search)) {
             $type = 'default-search';
-            $search = $request->get('search-keyword');
+            $keyword = $search_keyword;
 
             $books = DB::select("
                                 SELECT
@@ -53,11 +73,11 @@ class PagesController extends Controller
                                    LEFT JOIN authors on author_book.author_id = authors.id
                                    LEFT JOIN book_subject on book_subject.book_id = books.id
                                    LEFT JOIN subjects on book_subject.subject_id = subjects.id
-                                   WHERE (books.title LIKE '%{$search}%' 
-                                   OR publisher LIKE '%{$search}%' 
-                                   OR subjects.name LIKE '%{$search}%' 
-                                   OR authors.name LIKE '%{$search}%' 
-                                   OR books.call_number LIKE '%{$search}%')
+                                   WHERE (books.title LIKE '%{$keyword}%' 
+                                   OR publisher LIKE '%{$keyword}%' 
+                                   OR subjects.name LIKE '%{$keyword}%' 
+                                   OR authors.name LIKE '%{$keyword}%' 
+                                   OR books.call_number LIKE '%{$keyword}%')
                                    GROUP BY books.id
                                 ");
             $result = json_decode(json_encode($books), true);
@@ -71,22 +91,21 @@ class PagesController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
 
-        } else if (!is_null($request->get('filter_by')) && !is_null($request->get('search'))) {
+        } else if (!empty($filter_by) && !empty($search)) {
             $type = 'default-search';
 
             $query = Book::with('authors', 'subjects');
 
-            $filter_by = $request->get('filter_by');
-            $search = $request->get('search');
+            $keyword = $search;
 
             switch ($filter_by) {
                 case 'books.title' :
-                    $book_title = Book::select('title')->where('id', $search)->first();
+                    $book_title = Book::select('title')->where('id', $keyword)->first();
 
                     $books = $query->where('title', 'LIKE', "%$book_title->title%");
                     break;
                 case 'authors.name' :
-                    $author_name = Author::select('name')->where('id', $search)->first();
+                    $author_name = Author::select('name')->where('id', $keyword)->first();
 
                     $books = $query->whereHas('authors', function ($query) use ($author_name) {
                         $query->where('name', 'like', "%$author_name->name%");
@@ -94,7 +113,7 @@ class PagesController extends Controller
 
                     break;
                 case 'subjects.name' :
-                    $subject_name = Subject::select('name')->where('id', $search)->first();
+                    $subject_name = Subject::select('name')->where('id', $keyword)->first();
 
                     $books = $query->whereHas('subjects', function ($query) use ($subject_name) {
                         $query->where('name', 'like', "%$subject_name->name%");
@@ -102,12 +121,12 @@ class PagesController extends Controller
 
                     break;
                 case 'books.publisher' :
-                    $book_title = Book::select('publisher')->where('id', $search)->first();
+                    $book_title = Book::select('publisher')->where('id', $keyword)->first();
 
                     $books = $query->where('publisher', '=', "$book_title->publisher");
                     break;
                 case 'books.call_number' :
-                    $book_title = Book::select('call_number')->where('id', $search)->first();
+                    $book_title = Book::select('call_number')->where('id', $keyword)->first();
 
                     $books = $query->where('call_number', '=', "$book_title->call_number");
                     break;
@@ -145,11 +164,11 @@ class PagesController extends Controller
                    LEFT JOIN authors on author_book.author_id = authors.id
                    LEFT JOIN book_subject on book_subject.book_id = books.id
                    LEFT JOIN subjects on book_subject.subject_id = subjects.id
-        WHERE (books.title LIKE '%{$request->get('book_title')}%'
-    AND publisher LIKE '%{$request->get('publisher_name')}%'
-    AND subjects.name LIKE '%{$request->get('subject_name')}%'
-    AND authors.name LIKE '%{$request->get('authors_name')}%'
-    AND books.call_number LIKE '%{$request->get('call_number')}%')
+        WHERE (books.title LIKE '%{$req_book_title}%'
+    AND publisher LIKE '%{$req_publisher_name}%'
+    AND subjects.name LIKE '%{$req_subject_name}%'
+    AND authors.name LIKE '%{$req_authors_name}%'
+    AND books.call_number LIKE '%{$req_call_number}%')
                    GROUP BY books.id
         ";
 
@@ -167,5 +186,12 @@ class PagesController extends Controller
         }
 
         return view('pages.index', compact('request', 'data', 'type'));
+    }
+
+    public function search(Request $request)
+    {
+        $this->model_filter->setFormData($request->except('_token'));
+
+        return redirect('/');
     }
 }
