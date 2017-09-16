@@ -91,6 +91,7 @@ class UsersController extends Controller
             'password'  => bcrypt($request->input('password')),
             'username'  => $request->input('user_id')
         ]);
+        $user->username = $user->user_id;
         $user->save();
 
         $user->roles()->sync($request->input('roles'));
