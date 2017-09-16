@@ -9,6 +9,30 @@
         .search-panel {
             color: #3c763d;
         }
+
+        .table tbody tr.borrowed {
+            background-color: #c8fef6 !important;
+        }
+
+        .table tbody tr.lostAndReplaced {
+            background-color: #d1d2d2 !important;
+        }
+
+        .table tbody tr.cancelledOrRejected {
+            background-color: #ef6b6b !important;
+        }
+
+        .table tbody tr.returned {
+          background-color: #82f2a9 !important;
+        }
+
+        .table tbody tr.expired {
+            background-color: #f2d682 !important;
+        }
+
+        .table tbody tr.borrowedOverdue {
+            background-color: #f2829b !important;
+        }
     </style>
 @endsection()
 
@@ -242,6 +266,30 @@
                 <br>
 
                 <div class="col-sm-9">
+                    <div>
+                        <div class="level">
+                            <span class="flex"></span>
+                            <h6 class="text-success" style="margin-right: 5px">Legend:</h6>
+                            <div style="background-color: #c8fef6; padding: 1px 12px 1px 12px">
+                                <h6>*Borrowed</h6>
+                            </div>
+                            <div style="background-color: #d1d2d2; padding: 1px 12px 1px 12px">
+                                <h6>*Lost And Replaced</h6>
+                            </div>
+                            <div style="background-color: #ef6b6b; padding: 1px 12px 1px 12px">
+                                <h6>*Cancelled Or Rejected</h6>
+                            </div>
+                            <div style="background-color: #82f2a9; padding: 1px 12px 1px 12px">
+                                <h6>*Returned</h6>
+                            </div>
+                            <div style="background-color: #f2d682; padding: 1px 12px 1px 12px">
+                                <h6>*Expired</h6>
+                            </div>
+                            <div style="background-color: #f2829b; padding: 1px 12px 1px 12px">
+                                <h6>*Overdue</h6>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-condensed table-bordered">
                             <tr class="search-panel">
@@ -266,16 +314,18 @@
                                 <?php
                                     $table_color = '';
 
-                                    if($transaction->status == 'borrowed') {
-                                        $table_color = 'primary';
+                                    if($transaction->status == 'borrowed' && !$transaction->is_overdue) {
+                                        $table_color = 'borrowed';
                                     } elseif($transaction->status == 'expired') {
-                                        $table_color = 'warning';
+                                        $table_color = 'expired';
                                     } elseif($transaction->status == 'returned') {
-                                        $table_color = 'success';
+                                        $table_color = 'returned';
                                     } elseif($transaction->status == 'canceled' || $transaction->status == 'rejected') {
-                                        $table_color = 'danger';
+                                        $table_color = 'cancelledOrRejected';
                                     } elseif ($transaction->status == 'lost_and_replaced') {
-                                        $table_color = 'info';
+                                        $table_color = 'lostAndReplaced';
+                                    } elseif ($transaction->status == 'borrowed' && $transaction->is_overdue) {
+                                        $table_color = 'borrowedOverdue';
                                     }
 
 //                                    var_dump($transaction->toArray());
