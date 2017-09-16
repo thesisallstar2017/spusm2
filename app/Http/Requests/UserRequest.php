@@ -27,7 +27,8 @@ class UserRequest extends Request
           'name' => 'required|max:255',
           'user_id' => 'required|unique:users|numeric',
           'email' => 'required|email|max:255|unique:users',
-          'password' => 'required|min:6'
+          'password' => 'required|min:6',
+          'roles'   => 'required'
         ];
     }
 }

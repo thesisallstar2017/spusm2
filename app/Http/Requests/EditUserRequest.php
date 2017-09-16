@@ -27,7 +27,8 @@ class EditUserRequest extends Request
           'name' => 'required|max:255',
           'user_id' => 'required|numeric',
           'email' => 'required|email|max:255|unique:users,email,' . $this->input('id'),
-          'password' => 'min:6'
+          'password' => 'min:6',
+          'roles'   => 'required'
         ];
     }
 }
