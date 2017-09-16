@@ -11,9 +11,11 @@ Route::auth();
 Route::post('/admin/users/filter', 'Admin\UsersController@filter');
 Route::resource('admin/users', 'Admin\UsersController');
 
+
 //Books
 Route::post('/admin/books/{book_id}/archive', 'Admin\BooksController@archive');
 Route::get('/admin/books/download', 'Admin\BooksController@downloadBooks');
+Route::get('/admin/books/{password}/confirm-password', 'Admin\BooksController@confirmPassword');
 Route::post('/admin/books/filter', 'Admin\BooksController@filter');
 Route::resource('admin/books', 'Admin\BooksController');
 

@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use Bzarzuela\ModelFilter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class BooksController extends Controller
 {
@@ -45,6 +46,8 @@ class BooksController extends Controller
      */
     public function index()
     {
+//        dd(Hash::check('password', auth()->user()->password));
+//        dd(auth()->user()->password == bcrypt('password'));
         if (!Auth::user()->hasRole('admin')) {
             alert()->error('Access Denied!');
             return back();
@@ -331,13 +334,31 @@ class BooksController extends Controller
         ]);
     }
 
+    public function confirmPassword($password)
+    {
+        if (Hash::check($password, auth()->user()->password)) {
+            return response()->json([
+                'success' => true
+            ]);
+        }
+
+        return response()->json([
+            'success' => false
+        ]);
+    }
+
     public function archive(Request $request, $id)
     {
 //        dd($request->all());
+        $this->validate($request, [
+            'reason_for_weeding' => 'required'
+        ]);
+
         $book = Book::find($request->get('book-id'));
 
         $book->reason_for_weeding = $request->get('reason_for_weeding');
         $book->archive = 'Yes';
+        $book->archived_by = auth()->user()->name;
         $book->save();
 
         return response()->json([

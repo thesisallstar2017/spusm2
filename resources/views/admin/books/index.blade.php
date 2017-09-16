@@ -71,17 +71,47 @@
                                         <li>Indicate in the accession record the remark DISCARDED & the date. </li>
                                         <li>Shelf list record & catalog cards must be removed like the author, title , subject cards etc.</li>
                                     </ol>
+
+                                    <div id="errorDiv" class="alert alert-danger">
+
+                                    </div>
                                     {!! BootForm::open()->id('archive-form') !!}
                                     {!! BootForm::hidden('book-id') !!}
                                     {!! BootForm::textarea('Reason For Weeding', 'reason_for_weeding')->rows(4) !!}
                                     {!! BootForm::close() !!}
-                                    <button class="btn btn-danger btn-block" id="archive">Archive this book</button>
+
+                                    <a data-toggle="modal"
+                                       data-target="#password-confirmation"
+                                       {{--href="/admin/lost-book/{{$transaction->id}}"--}}
+                                       class="btn btn-danger btn-block">For Archiving</a>
+
+                                    {{--<button class="btn btn-danger btn-block" id="archive">Archive this book</button>--}}
                                 </div>
                                 {{--</small>--}}
                             </div>
                         </div>
                     </div>
                 </div>
+                <div id="password-confirmation" class="modal fade" role="dialog">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h5 class="modal-title">Enter Password</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div id="passDiv" class="alert alert-danger">
+
+                                </div>
+                                {!! BootForm::open()->id('password-confirmation-form') !!}
+                                {!! BootForm::password('Password', 'password') !!}
+                                {!! BootForm::close() !!}
+                                <button class="btn btn-danger btn-block" id="archive">Archive this book</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <hr>
 
                 <div class="col-sm-3 search-panel">
@@ -183,6 +213,9 @@
 @section('page_js')
     <script src="/js/jquery-barcode.min.js"></script>
     <script type="text/javascript">
+        $("#errorDiv").hide();
+        $("#passDiv").hide();
+
         $(document).ready(function() {
             $(".barcode").each(function (i, e) {
                 $(e).barcode($(e).text(), "code128", { showHRI: false} );
@@ -201,43 +234,71 @@
 
 
         $('#view-criteria-of-weeding').on('show.bs.modal', function(e) {
+            $("#errorDiv").hide();
             var bookId = $(e.relatedTarget).data('book-id');
             $(e.currentTarget).find('input[name="book-id"]').val(bookId);
         });
 
+        $('#password-confirmation').on('show.bs.modal', function(e) {
+            $('input[name="password"]').val('');
+            $("#passDiv").hide();
+        });
+
         $("#archive").click(function() {
 
-            var url = '/admin/books/' + "{{ isset($book->id) ? $book->id : ''}}" + '/archive';
+            var confirm_password_form_data = $("#password-confirmation-form").serialize();
+            var pass = $('input[name="password"]').val();
 
-            console.log(url);
-            swal({
-                title: "Are you sure to archive this book?",
-                showCancelButton: true,
-                cancelButtonText: "No",
-                confirmButtonColor: "#5cb85c",
-                confirmButtonText: "Yes",
-                closeOnConfirm: true
-            }, function() {
+            var get_url = '/admin/books/' + pass + '/confirm-password';
+
+            $.get(get_url, confirm_password_form_data, function(data) {
+                if (data.success) {
+                    var url = '/admin/books/' + "{{ isset($book->id) ? $book->id : ''}}" + '/archive';
+
+                    console.log(url);
+                    swal({
+                        title: "Are you sure to archive this book?",
+                        showCancelButton: true,
+                        cancelButtonText: "No",
+                        confirmButtonColor: "#5cb85c",
+                        confirmButtonText: "Yes",
+                        closeOnConfirm: true
+                    }, function() {
+                        $('#password-confirmation').modal('hide');
 
                 var form_data = $("#archive-form").serialize();
 
-                $.post(url, form_data, function (data) {
+                        $.post(url, form_data)
+                            .done(function (data) {
+                                if (data.success) {
+                                    swal({
+                                        title: "Success!",
+                                        text: "Book is successfully archived",
+                                        type: "success",
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    });
 
-                    if (data.success) {
-                        swal({
-                            title: "Success!",
-                            text: "Book is successfully archived",
-                            type: "success",
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
+                                    window.setTimeout(function(){
+                                        window.location.href = "/admin/books";
+                                    }, 3000);
+                                }
+                            })
+                            .fail(function(error) {
+                                var errorValue = '';
 
-                        window.setTimeout(function(){
-                            window.location.href = "/admin/books";
-                        }, 3000);
-                    }
-                });
+                                var error_list = jQuery.parseJSON( error.responseText );
+                                $.each( error_list, function( key, value) {
+                                    errorValue += '<li>' + value + '</li>';
+                                });
+                                $('#errorDiv').show().html(errorValue);
+
+                            });
 //                }
+                    });
+                } else {
+                    $("#passDiv").show().html('Invalid Password!');
+                }
             });
         });
 

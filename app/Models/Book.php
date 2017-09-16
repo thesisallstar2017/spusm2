@@ -29,7 +29,8 @@ class Book extends Model
       'compiler',
       'note',
       'available_quantity',
-      'reason_for_weeding'
+      'reason_for_weeding',
+      'archived_by'
     ];
 
     public function authors()
