@@ -61,12 +61,20 @@
                 <br>
                 <table class="table table-bordered table-condensed">
                     <tr>
+                        <th>Material</th>
+                        <td>{{ $book->material->name }}</td>
+                    </tr>
+                    <tr>
                         <th>Card Number</th>
                         <td>{{ $book->card_number }}</td>
                     </tr>
                     <tr>
                         <th>Card Number</th>
                         <td>{{ $book->call_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>ISBN</th>
+                        <td>{{ $book->isbn }}</td>
                     </tr>
                     <tr>
                         <th>Title</th>
@@ -81,12 +89,12 @@
                         <td>{{ implode(', ', $subjects) }}</td>
                     </tr>
                     <tr>
-                        <th>Publisher</th>
-                        <td>{{ $book->publisher }}</td>
+                        <th>Published</th>
+                        <td>{{ $book->publisher . ' ' . $book->publish_place . ' ' . $book->published_year }}</td>
                     </tr>
                     <tr>
-                        <th>Year Published</th>
-                        <td>{{ $book->published_year }}</td>
+                        <th>Physical Description</th>
+                        <td>{{ $book->physical_desc }}</td>
                     </tr>
                     <tr>
                         <th>Total Copies</th>
@@ -97,19 +105,24 @@
                         <td>{{ $book->available_quantity }}</td>
                     </tr>
                 </table>
-                @if (!Auth::user()->hasRole('admin'))
-                    {!! BootForm::open()->id('reserveBook')->post()->action(url('admin/reserve-books/' . $book->id)) !!}
-                    {!! BootForm::submit('Reserve', 'reserve')->class('btn btn-success form-control reserve') !!}
-                    {!! BootForm::close() !!}
-                @else
-                    {!! BootForm::open() !!}
+                @if (Auth::check())
+                    @if (!Auth::user()->hasRole('admin'))
+                        {!! BootForm::open()->id('reserveBook')->post()->action(url('admin/reserve-books/' . $book->id)) !!}
+                        {!! BootForm::submit('Reserve', 'reserve')->class('btn btn-success form-control reserve') !!}
+                        {!! BootForm::close() !!}
+                    @else
+                        {!! BootForm::open() !!}
 
-                    <a data-toggle="modal"
-                       data-target="#reserve_book_admin"
-                       {{--href="/admin/lost-book/{{$transaction->id}}"--}}
-                       class="btn btn-success form-control">Borrow</a>
-                    {{--{!! BootForm::button('Reserve', 'reserve-admin')->class('btn btn-success form-control reserve-admin') !!}--}}
-                    {!! BootForm::close() !!}
+                        <a data-toggle="modal"
+                           data-target="#reserve_book_admin"
+                           {{--href="/admin/lost-book/{{$transaction->id}}"--}}
+                           class="btn btn-success form-control">Borrow</a>
+                        {{--{!! BootForm::button('Reserve', 'reserve-admin')->class('btn btn-success form-control reserve-admin') !!}--}}
+                        {!! BootForm::close() !!}
+                    @endif
+                @else
+                    <?php session(['current_url' => url()->current()]);?>
+                    <a href="/login" class="btn btn-success form-control">LOGIN TO RESERVE THIS BOOK</a>
                 @endif
             </div>
         </div>

@@ -70,6 +70,9 @@ class AuthController extends Controller
     protected function authenticated($request, $user)
     {
         if ($user->roles[0]->name == 'admin' || $user->roles[0]->name == 'student' || $user->roles[0]->name == 'faculty') {
+            if (session()->has('current_url')) {
+                return redirect(session()->get('current_url'));
+            }
             return redirect()->intended('admin/transaction');
         }
 

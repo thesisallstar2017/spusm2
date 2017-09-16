@@ -32,7 +32,7 @@ class BooksController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['show']]);
         $this->model_filter = new ModelFilter('books');
 
         $this->model_filter->setRules($this->filter_rules);
@@ -187,7 +187,7 @@ class BooksController extends Controller
      */
     public function show($id)
     {
-        $book = Book::with('authors', 'subjects')->findOrFail($id);
+        $book = Book::with('authors', 'subjects', 'material')->findOrFail($id);
 
         $users = User::lists('name', 'id')->toArray();
 

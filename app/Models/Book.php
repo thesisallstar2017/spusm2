@@ -42,6 +42,11 @@ class Book extends Model
         return $this->belongsToMany(Subject::class);
     }
 
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'material_id');
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);

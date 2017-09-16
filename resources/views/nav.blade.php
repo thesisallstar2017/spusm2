@@ -65,7 +65,15 @@
 
                 </li>
 
-                <li><a href="/logout">LOGOUT</a></li>
+                <li><a href="/logout">
+                        LOGOUT
+                        <?php
+                        if (session()->has('current_url')) {
+                            session()->forget('current_url');
+                        }
+                        ?>
+                    </a>
+                </li>
             @else
                 <li><a href="/login">LOGIN</a></li>
             @endif
