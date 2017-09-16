@@ -23,6 +23,7 @@
             <div class="panel advanced-search" style="border-width: 2px;border-color:#5cb85c; display: none;">
                 <div class="panel-body">
                     {!! BootForm::openHorizontal(['sm' => [2,10]])->addClass('search-panel')->action('/')->post() !!}
+                    {!! BootForm::bind($filters) !!}
                     {!! BootForm::text('Book', 'book_title') !!}
                     {!! BootForm::text('Author', 'authors_name') !!}
                     {!! BootForm::text('Subject', 'subject_name') !!}
@@ -37,7 +38,7 @@
             <div class="panel default-search" style="border-width: 2px;border-color:#5cb85c">
                 <div class="panel-body">
                     {!! BootForm::openHorizontal(['sm' => [1,11]])->addClass('search-panel') !!}
-                    {!! BootForm::bind($request) !!}
+                    {!! BootForm::bind($filters) !!}
                     {!! BootForm::select('Filter By', 'filter_by', [
                             'keyword'           => 'Keyword',
                             'books.title'       => 'Book Title',
