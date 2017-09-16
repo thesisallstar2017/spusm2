@@ -69,7 +69,7 @@
                         <td>{{ $book->card_number }}</td>
                     </tr>
                     <tr>
-                        <th>Card Number</th>
+                        <th>Call Number</th>
                         <td>{{ $book->call_number }}</td>
                     </tr>
                     <tr>
