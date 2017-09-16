@@ -185,7 +185,7 @@ class PagesController extends Controller
             );
         }
 
-        return view('pages.index', compact('request', 'data', 'type'));
+        return view('pages.index', compact('request', 'data', 'type', 'filters'));
     }
 
     public function search(Request $request)
