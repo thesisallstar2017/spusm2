@@ -33,6 +33,16 @@
         .table tbody tr.borrowedOverdue {
             background-color: #f2829b !important;
         }
+
+        .labelClass {
+            vertical-align: middle !important;
+            text-align: center;
+            font-size: 8px;
+            font-weight: bold;
+            border: none !important;
+        }
+
+        .outside {border:none !important; vertical-align: middle !important;  }
     </style>
 @endsection()
 
@@ -266,30 +276,28 @@
                 <br>
 
                 <div class="col-sm-9">
-                    <div>
+                    {{--<div class="row">--}}
+                        {{--<div class="col-sm-8 col-sm-offset-4">--}}
+                    <div >
                         <div class="level">
                             <span class="flex"></span>
-                            <h6 class="text-success" style="margin-right: 5px">Legend:</h6>
-                            <div style="background-color: #c8fef6; padding: 1px 12px 1px 12px">
-                                <h6>*Borrowed</h6>
-                            </div>
-                            <div style="background-color: #d1d2d2; padding: 1px 12px 1px 12px">
-                                <h6>*Lost And Replaced</h6>
-                            </div>
-                            <div style="background-color: #ef6b6b; padding: 1px 12px 1px 12px">
-                                <h6>*Cancelled Or Rejected</h6>
-                            </div>
-                            <div style="background-color: #82f2a9; padding: 1px 12px 1px 12px">
-                                <h6>*Returned</h6>
-                            </div>
-                            <div style="background-color: #f2d682; padding: 1px 12px 1px 12px">
-                                <h6>*Expired</h6>
-                            </div>
-                            <div style="background-color: #f2829b; padding: 1px 12px 1px 12px">
-                                <h6>*Overdue</h6>
-                            </div>
+                            <small>
+                                <table class="table table-responsive" style="margin-bottom:0">
+                                    <tr>
+                                        <th class="outside text-success">Legend:</th>
+                                        <td class="labelClass" style="background-color: #c8fef6">Borrowed</td>
+                                        <td class="labelClass" style="background-color: #d1d2d2">Lost And Replaced</td>
+                                        <td class="labelClass" style="background-color: #ef6b6b">Cancelled Or Rejected</td>
+                                        <td class="labelClass" style="background-color: #82f2a9">Returned</td>
+                                        <td class="labelClass" style="background-color: #f2d682">Expired</td>
+                                        <td class="labelClass" style="background-color: #f2829b">Overdue</td>
+                                    </tr>
+                                </table>
+                            </small>
                         </div>
                     </div>
+                        {{--</div>--}}
+                    {{--</div>--}}
                     <div class="table-responsive">
                         <table class="table table-condensed table-bordered">
                             <tr class="search-panel">
