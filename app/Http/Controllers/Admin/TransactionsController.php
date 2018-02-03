@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\BookReserved;
+use App\Holiday;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Fee;
@@ -354,13 +355,20 @@ class TransactionsController extends Controller
 
         foreach($subs as $key => $value) {
             if (strpos($value, 'Fiction') !== false) {
-                $return_at = Carbon::parse($transaction->reserved_at)->addWeek();
+                $return_at = Carbon::now()->addWeek();
             } elseif($transaction->type == 'non-reserved' && strpos($value, 'Fiction') === false) {
-                $return_at = Carbon::now()->addDays(2);
+                $return_at = Carbon::now()->addWeekdays(2);
             } else {
                 $return_at = Carbon::now()->tomorrow()->hour(9);
             }
         }
+
+        if (Carbon::parse($return_at)->isWeekend()) {
+            $return_at->addWeekday();
+        }
+
+        $return_at = $this->getHolidays(Carbon::now(), Carbon::parse($return_at));
+
 
         $transaction->status = 'borrowed';
         $transaction->borrowed_at = Carbon::now();
@@ -383,15 +391,22 @@ class TransactionsController extends Controller
 
         $return_at = '';
 
+
         foreach($subs as $key => $value) {
             if (strpos($value, 'Fiction') !== false) {
-                $return_at = Carbon::parse($transaction->reserved_at)->addWeek();
+                $return_at = Carbon::now()->addWeek();
             } elseif($transaction->type == 'non-reserved' && strpos($value, 'Fiction') === false) {
-                $return_at = Carbon::now()->addDays(2);
+                $return_at = Carbon::now()->addWeekdays(2);
             } else {
                 $return_at = Carbon::now()->tomorrow()->hour(9);
             }
         }
+
+        if (Carbon::parse($return_at)->isWeekend()) {
+          $return_at->addWeekday();
+        }
+
+        $return_at = $this->getHolidays(Carbon::now(), Carbon::parse($return_at));
 
         $transaction->status = 'borrowed';
         $transaction->borrowed_at = Carbon::now();
@@ -720,5 +735,24 @@ class TransactionsController extends Controller
             'success' => $success,
             'message' => $message
         ]);
+    }
+
+    public function getHolidays($started, $return_at)
+    {
+        $holidays = Holiday::where('event_date', '>=', $started->format('Y-m-d'))
+          ->where('event_date', '<=', $return_at->format('Y-m-d'))
+          ->groupBy('event_date')
+          ->get();
+
+        if (count($holidays) > 0) {
+            foreach ($holidays as $holiday) {
+                $holiday_date = new Carbon($holiday->event_date);
+                if ($holiday_date->isWeekday()) {
+                    $return_at->addWeekday();
+                }
+            }
+        }
+
+        return $return_at;
     }
 }

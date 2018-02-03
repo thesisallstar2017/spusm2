@@ -61,6 +61,7 @@
                        aria-expanded="false">SETTINGS <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/change-password">Change Password</a></li>
+                        <li><a href="/admin/holiday">Manage Holidays</a></li>
                     </ul>
 
                 </li>

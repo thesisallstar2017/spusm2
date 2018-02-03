@@ -29,6 +29,7 @@
                     {!! BootForm::text('Subject', 'subject_name') !!}
                     {!! BootForm::text('Publisher', 'publisher_name') !!}
                     {!! BootForm::text('Call Number', 'call_number') !!}
+                    {!! BootForm::text('Barcode', 'barcode') !!}
                     {!! BootForm::submit('Search') !!}
                     {!! BootForm::close() !!}
 
@@ -66,6 +67,7 @@
                 <table class="table table-hover table-bordered table-condensed">
                     <thead>
                     <tr class="search-panel">
+                        <th>Barcode</th>
                         <th>Card Number</th>
                         <th>Call Number</th>
                         <th>Title</th>
@@ -80,6 +82,7 @@
                     @forelse($data as $value)
                         <tr>
                             @if ($value['archive'] != 'Yes')
+                            <td>{{$value['barcode']}}</td>
                             <td>{{$value['card_number']}}</td>
                             <td>{{$value['call_number']}}</td>
                             <td>{{$value['title']}}</td>

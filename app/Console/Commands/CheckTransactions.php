@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Holiday;
 use App\Models\Book;
 use App\Models\Fee;
 use App\Models\Transaction;
@@ -49,8 +50,18 @@ class CheckTransactions extends Command
             Log::info('with transaction');
         }
 
+
         $count = 0;
         foreach ($transactions as $transaction) {
+
+            if ($this->isWeekend(Carbon::now())) {
+                continue;
+            }
+
+            if ($this->isHoliday(Carbon::now())) {
+                continue;
+            }
+
             $book = Book::with('subjects')->where('id', $transaction->book_id)->first();
             $subs = [];
             foreach ($book->subjects as $subject) {
@@ -152,5 +163,28 @@ class CheckTransactions extends Command
             }
         }
 
+    }
+
+    private function isHoliday($today)
+    {
+        $holidays = Holiday::where('event_date', '>=', $today->format('Y-m-d'))
+          ->where('event_date', '<=', $today->format('Y-m-d'))
+          ->groupBy('event_date')
+          ->get();
+
+        if (count($holidays) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isWeekend($today)
+    {
+        if ($today->isWeekEnd()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

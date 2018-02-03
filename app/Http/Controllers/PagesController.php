@@ -47,6 +47,7 @@ class PagesController extends Controller
         $req_subject_name = isset($filters['subject_name']) ? $filters['subject_name'] : '';
         $req_publisher_name = isset($filters['publisher_name']) ? $filters['publisher_name'] : '';
         $req_call_number = isset($filters['call_number']) ? $filters['call_number'] : '';
+        $barcode = isset($filters['barcode']) ? $filters['barcode'] : '';
 
 //        dd(!empty($filter_by), $search_keyword, $search, $req_book_title,
 //            $req_authors_name, $req_subject_name, $req_publisher_name, $req_call_number);
@@ -168,7 +169,8 @@ class PagesController extends Controller
     AND publisher LIKE '%{$req_publisher_name}%'
     AND subjects.name LIKE '%{$req_subject_name}%'
     AND authors.name LIKE '%{$req_authors_name}%'
-    AND books.call_number LIKE '%{$req_call_number}%')
+    AND books.call_number LIKE '%{$req_call_number}%'
+    AND books.barcode LIKE '%{$barcode}%')
                    GROUP BY books.id
         ";
 

@@ -42,6 +42,13 @@ class UsersController extends Controller
             return back();
         }
 
+        $roles_base  = Role::all();
+
+        $roles  = ['' => '-- Select One --'];
+        foreach ($roles_base as $this_role) {
+          $roles[$this_role->id]  = ucwords($this_role->name);
+        }
+
         $filters = $this->model_filter->getFormData();
 
         $order_by = isset($filters['order']) ? $filters['order'] : '';
@@ -50,13 +57,23 @@ class UsersController extends Controller
 
         $query = User::query();
 
-        if ($order_by != '') {
-            $users = $this->model_filter->filter($query)->orderBy($filters['sort'], $order_by)->paginate(10);
+        $role_id = isset($filters['role']) ? $filters['role'] : '';
+
+        if ($role_id != '') {
+            if ($order_by != '') {
+                $users = $this->model_filter->filter($query)->role($role_id)->orderBy($filters['sort'], $order_by)->paginate(10);
+            } else {
+                $users = $this->model_filter->filter($query)->role($role_id)->orderBy('id', 'ASC')->paginate(10);
+            }
         } else {
-            $users = $this->model_filter->filter($query)->orderBy('id', 'ASC')->paginate(10);
+            if ($order_by != '') {
+                $users = $this->model_filter->filter($query)->orderBy($filters['sort'], $order_by)->paginate(10);
+            } else {
+                $users = $this->model_filter->filter($query)->orderBy('id', 'ASC')->paginate(10);
+            }
         }
 
-        return view('admin.users.index', compact('users', 'filters'));
+        return view('admin.users.index', compact('users', 'filters', 'roles'));
     }
 
     /**

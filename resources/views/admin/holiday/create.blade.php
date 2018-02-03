@@ -1,29 +1,43 @@
 @extends('layout')
 
+@section('internal_stylesheet')
+    <style type="text/css">
+        .self-class {
+            font-size: 12px;
+            height:100%;
+        }
+    </style>
+@endsection
+
 @section('content')
-    <h2>Holidays</h2>
-    <a href="{{ route('admin.holiday.create') }}" class="btn btn-primary">Add holiday</a>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach ($holidays as $holiday)
-            <tr>
-                <td>{{$holiday->name}}</td>
-                <td>{{$holiday->event_date->format('Y-m-d H:i:s')}}</td>
-                <td>
-                    <a class="btn btn-default" href="{{ route('admin.holiday.edit', ['holiday' => $holiday->id]) }}">Edit</a>
-                    {!! BootForm::open()->delete() !!}
-                    {!! BootForm::submit('Delete')->class('btn btn-danger') !!}
-                    {!! BootForm::close() !!}
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+    <div id="content-header" style="border-bottom: 0px;">
+        <div class="header-bg">
+            <div class="container">
+                <div class="col-lg-12">
+                    <h4>HOLIDAYS/SUSPENSIONS</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <a href="{{url('admin/holiday')}}" class="btn btn-success"><i class="fa fa-1x
+                fa-plus-circle"></i> Back</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col-md-12 self-class">
+            <small>
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3 self-class">
+                        <p style="font-size: 25px; text-align: center">Add <strong style="color:#3c763d">NEW</strong></p>
+                        <br>
+                        {!! BootForm::open()->post()->action(url('admin/holiday')) !!}
+                        {!! BootForm::text('Name', 'name') !!}
+                        {!! BootForm::date('Date', 'event_date') !!}
+                        {!! BootForm::submit('Save', 'save')->class('btn btn-success form-control') !!}
+                        {!! BootForm::close() !!}
+                    </div>
+                </div>
+            </small>
+        </div>
+    </div>
 @endsection

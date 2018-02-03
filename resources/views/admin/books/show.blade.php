@@ -145,7 +145,7 @@
                 allowClear: true,
                 minimumInputLength: 3,
                 ajax: {
-                    url: '/users/search',
+                    url: '/username/search',
                     data: function (params) {
                         return {
                             q: params.term,

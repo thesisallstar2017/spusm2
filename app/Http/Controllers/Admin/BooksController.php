@@ -192,7 +192,7 @@ class BooksController extends Controller
     {
         $book = Book::with('authors', 'subjects', 'material')->findOrFail($id);
 
-        $users = User::lists('name', 'id')->toArray();
+        $users = User::lists('username', 'id')->toArray();
 
         return view('admin.books.show', compact('book', 'users'));
     }

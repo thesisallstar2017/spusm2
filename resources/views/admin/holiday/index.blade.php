@@ -9,6 +9,21 @@
         .search-panel {
             color: #3c763d;
         }
+
+        .table tbody tr.due {
+            background-color: #ef6b6b !important;
+        }
+
+        .labelClass {
+            vertical-align: middle !important;
+            text-align: center;
+            font-size: 8px;
+            font-weight: bold;
+            border: none !important;
+        }
+
+        .outside {border:none !important; vertical-align: middle !important;  }
+
     </style>
 @endsection()
 
@@ -24,40 +39,60 @@
     </div>
     <div class="container">
         <div class="row">
+            <div class="col-sm-10 col-sm-offset-10">
+                <a href="{{ route('admin.holiday.create') }}" class="btn btn-success"><i class="fa fa-1x fa-plus-circle"></i> Add Event</a>
+            </div>
             <div class="col-sm-12 self-class">
-                <a href="{{ route('admin.holiday.create') }}" class="btn btn-success" id="toggle-form">Add holiday</a>
-                <br><br>
-                <div id="form-container" style="display: none">
-                    {!! BootForm::open()->action(route('admin.holiday.store'))->post() !!}
-                    {!! BootForm::text('Name', 'name') !!}
-                    {!! BootForm::date('Date', 'event_date')->required() !!}
-                    {!! BootForm::submit('Save')->class('btn btn-success') !!}
-                    {!! BootForm::close() !!}
+                <hr>
+
+                <div >
+                    <div class="level">
+                        <span class="flex"></span>
+                        <small>
+                            <table class="table table-responsive" style="margin-bottom:0">
+                                <tr>
+                                    <th class="outside text-success">Legend:</th>
+                                    <td class="labelClass" style="background-color: #ef6b6b">Behind Today (For Deletion)</td>
+                                </tr>
+                            </table>
+                        </small>
+                    </div>
                 </div>
-                <table class="table table-hover table-condensed table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Date</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($holidays as $holiday)
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover table-condensed table-bordered">
+                        <thead>
                         <tr>
-                            <td>{{$holiday->name}}</td>
-                            <td>{{$holiday->event_date->format('Y-m-d')}}</td>
-                            <td>
-                                <a class="btn btn-default" href="{{ route('admin.holiday.edit', ['holiday' => $holiday->id]) }}">Edit</a>
-                                {!! BootForm::open()->delete()->action(route('admin.holiday.destroy', ['holiday' => $holiday->id]))->style('display: inline') !!}
-                                {!! BootForm::submit('Delete')->class('btn btn-danger') !!}
-                                {!! BootForm::close() !!}
-                            </td>
+                            <th>Event Name</th>
+                            <th>Date</th>
+                            <th>&nbsp</th>
                         </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-                {!! $holidays->render() !!}
+                        </thead>
+                        <tbody>
+                        @foreach ($holidays as $holiday)
+                            <?php
+                                $table_color = '';
+
+                                if (\Carbon\Carbon::now()->format('Y-m-d') > $holiday->event_date->format('Y-m-d')) {
+                                    $table_color = 'due';
+                                }
+                            ?>
+                            <tr class="{{ $table_color }}">
+                                <td>{{$holiday->name}}</td>
+                                <td>{{$holiday->event_date->format('Y-m-d')}}</td>
+                                <td style="width: 10%">
+                                    {!! BootForm::open()->delete()->action(route('admin.holiday.destroy', ['holiday' => $holiday->id])) !!}
+                                    <a class="btn btn-success btn-xs btn-block" href="{{ route('admin.holiday.edit', ['holiday' => $holiday->id]) }}">Edit</a>
+                                    {!! BootForm::submit('Delete')->class('btn btn-danger btn-xs btn-block') !!}
+                                    {!! BootForm::close() !!}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    {!! $holidays->render() !!}
+                </div>
             </div>
         </div>
     </div>
@@ -65,11 +100,5 @@
 
 @section('page_js')
     <script type="text/javascript">
-        $(function() {
-            $("#toggle-form").on('click', function() {
-                $("#form-container").toggle();
-                return false;
-            });
-        });
     </script>
 @endsection

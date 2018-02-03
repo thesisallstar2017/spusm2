@@ -151,8 +151,31 @@ class UtilitiesController extends Controller
         ];
     }
 
+  public function searchUserName(Request $request)
+  {
+      $q = $request->input('q');
 
-    public function searchPublisher(Request $request)
+      $users = User::where('username', 'like', $q . '%')
+        ->paginate(10);
+
+      // Format for select2
+      $results = [];
+      foreach ($users as $user) {
+        $user->text = $user->username;
+        $results[]  = $user->toArray();
+      }
+
+      return [
+        'results' => $results,
+        'total' => $users->total(),
+        'pagination' => [
+          'more' => ($users->lastPage() > $users->currentPage()),
+          'page' => $users->currentPage(),
+        ],
+      ];
+  }
+
+  public function searchPublisher(Request $request)
     {
         $q = $request->input('q');
 

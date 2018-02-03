@@ -48,16 +48,21 @@ class HolidayController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public
-    function store(Request $request)
+    public function store(Request $request)
     {
         //
         if (!Auth::user()->hasRole('admin')) {
             $this->redirect('/');
         }
+
+        $this->validate($request, [
+            'event_date'   => 'required|unique:holidays'
+        ]);
+
+
         Holiday::create([
-            'name'  => $request->input('name', ''),
-            'event_date'    => Carbon::parse($request->input('event_date'))
+            'name'  => $request->input('name'),
+            'event_date'   => $request->input('event_date')
         ]);
 
         return redirect('admin/holiday');
@@ -102,6 +107,10 @@ class HolidayController extends Controller
         if (!Auth::user()->hasRole('admin')) {
             $this->redirect('/');
         }
+        $this->validate(request(), [
+          'event_date'   => 'required|unique:holidays,id,' . $holiday->id
+        ]);
+
         $holiday->name  = $request->input('name', '');
         $holiday->event_date    = Carbon::parse($request->input('event_date'));
         $holiday->save();

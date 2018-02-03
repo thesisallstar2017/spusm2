@@ -39,4 +39,9 @@ class User extends Model implements AuthenticatableContract,
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    public function scopeRole($query, $role_id)
+    {
+        return $query->where('id', $role_id);
+    }
 }
