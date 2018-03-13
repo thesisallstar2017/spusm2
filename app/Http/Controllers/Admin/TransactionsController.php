@@ -355,7 +355,7 @@ class TransactionsController extends Controller
 
         foreach($subs as $key => $value) {
             if (strpos($value, 'Fiction') !== false) {
-                $return_at = Carbon::now()->addWeek();
+                $return_at = Carbon::now()->addWeekdays(5);
             } elseif($transaction->type == 'non-reserved' && strpos($value, 'Fiction') === false) {
                 $return_at = Carbon::now()->addWeekdays(2);
             } else {
@@ -394,7 +394,7 @@ class TransactionsController extends Controller
 
         foreach($subs as $key => $value) {
             if (strpos($value, 'Fiction') !== false) {
-                $return_at = Carbon::now()->addWeek();
+                $return_at = Carbon::now()->addWeekdays(5);
             } elseif($transaction->type == 'non-reserved' && strpos($value, 'Fiction') === false) {
                 $return_at = Carbon::now()->addWeekdays(2);
             } else {

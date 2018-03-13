@@ -42,7 +42,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h5 class="modal-title">INPUT BORROWER's NAME</h5>
+                                <h5 class="modal-title">INPUT BORROWER's ID</h5>
                             </div>
                             <div class="modal-body">
                                 <p></p>
@@ -141,7 +141,7 @@
             });
 
             $("#user_id").select2({
-                placeholder: "-- Select Name --",
+                placeholder: "-- Select User --",
                 allowClear: true,
                 minimumInputLength: 3,
                 ajax: {
