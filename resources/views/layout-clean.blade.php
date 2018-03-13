@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:image" content="{{ public_path('images/meta_image.jpeg') }}" />
+    <meta property="og:title" content="SPUSM" />
+    <meta property="og:description" content="Saint Paul University San Miguel Bulacan Library System" />
     <title>@yield('title', 'Library System')</title>
     <link rel="stylesheet" href="{{ elixir('css/app.css') }}">
     @yield('internal_stylesheet')
